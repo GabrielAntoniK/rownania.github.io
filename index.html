@@ -28,10 +28,6 @@ body{
     max-width:420px;
 }
 
-h1{
-    margin-top:0;
-}
-
 #equation{
     font-size:42px;
     margin:30px 0;
@@ -84,7 +80,7 @@ button{
 
 <script>
 
-let a,b,c,x;
+let a,b,c;
 
 function randomInt(){
     return Math.floor(Math.random()*10)+1;
@@ -98,12 +94,55 @@ function generateEquation(){
 
     document.getElementById("equation").textContent=`${a}x + ${b} = ${c}`;
     document.getElementById("answer").textContent="";
+}
 
-    x=(c-b)/a;
+function gcd(a,b){
+    return b ? gcd(b, a % b) : a;
+}
+
+function simplifyFraction(num, den){
+
+    const divisor = gcd(num, den);
+
+    return {
+        num: num/divisor,
+        den: den/divisor
+    };
+}
+
+function toMixedNumber(num, den){
+
+    const sign = num * den < 0 ? "-" : "";
+    num = Math.abs(num);
+    den = Math.abs(den);
+
+    const simplified = simplifyFraction(num, den);
+
+    num = simplified.num;
+    den = simplified.den;
+
+    const whole = Math.floor(num/den);
+    const remainder = num % den;
+
+    if(remainder === 0){
+        return sign + whole;
+    }
+
+    if(whole === 0){
+        return sign + remainder + "/" + den;
+    }
+
+    return sign + whole + " " + remainder + "/" + den;
 }
 
 function showAnswer(){
-    document.getElementById("answer").textContent=`x = ${x}`;
+
+    const numerator = c - b;
+    const denominator = a;
+
+    const result = toMixedNumber(numerator, denominator);
+
+    document.getElementById("answer").textContent=`x = ${result}`;
 }
 
 generateEquation();
