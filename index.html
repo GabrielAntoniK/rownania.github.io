@@ -96,39 +96,33 @@ function generateEquation(){
     document.getElementById("answer").textContent="";
 }
 
-function gcd(a,b){
-    return b ? gcd(b, a % b) : a;
+function gcd(a, b) {
+    while (b !== 0) {
+        let t = b;
+        b = a % b;
+        a = t;
+    }
+    return a;
 }
 
-function simplifyFraction(num, den){
-
-    const divisor = gcd(num, den);
-
-    return {
-        num: num/divisor,
-        den: den/divisor
-    };
-}
-
-function toMixedNumber(num, den){
+function toMixedNumber(num, den) {
 
     const sign = num * den < 0 ? "-" : "";
     num = Math.abs(num);
     den = Math.abs(den);
 
-    const simplified = simplifyFraction(num, den);
+    const g = gcd(num, den);
+    num /= g;
+    den /= g;
 
-    num = simplified.num;
-    den = simplified.den;
-
-    const whole = Math.floor(num/den);
+    const whole = Math.floor(num / den);
     const remainder = num % den;
 
-    if(remainder === 0){
+    if (remainder === 0) {
         return sign + whole;
     }
 
-    if(whole === 0){
+    if (whole === 0) {
         return sign + remainder + "/" + den;
     }
 
@@ -142,13 +136,7 @@ function showAnswer(){
 
     const result = toMixedNumber(numerator, denominator);
 
-    document.getElementById("answer").textContent=`x = ${result}`;
-}
-
-generateEquation();
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
+    document.getElementById("answer").textContent = "x = " + result;
 }
 
 </script>
